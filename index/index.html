@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <router-view></router-view>
+    </div>
+    <script src="vue.js"></script>
+    <script src="vue-router.js"></script>
+    <script>
+   var Mains=Vue.component('mains',{
+       template:`
+<div>
+            <h1>this is my list</h1>
+            <input type="text" v-model="inputData">
+            <button @click='adds()' :disabled='flag'>t+</button>
+            <p v-show="flag">有重复</p>
+            <ul><li v-for='(value,index) in arr'>
+                <router-link :to="'/detail/'+index">{{value}}</router-link>
+        </li></ul>
+        </div>
+`,watch:{
+    inputData:function(){
+        if(this.arr.indexOf(this.inputData)==-1){
+            this.flag=false
+        }else{
+            this.flag=true
+        }
+    }
+},data:function(){
+    return{
+    arr:['a','b','c'],
+    inputData:"",
+        flag:false
+}
+},methods:{
+       adds:function(){
+       this.arr.push(this.inputData)
+       this.inputData=""
+   }
+   }
+   })
+   
+   var Detail=Vue.component('detail',{
+       template:`
+            <h1>下标为{{num}}</h1>
+`,data:function(){
+    return{
+        num:''
+    }
+},beforeMount:function(){
+    this.num=this.$route.params.ind
+}
+   })
+   
+   const myRoutes=[
+       {path:'/mains',component:Mains},
+       {path:'/detail/:ind',component:Detail},
+       {path:'/',component:Mains}
+   ]
+   
+   var myRouter=new VueRouter({
+            routes:myRoutes
+        })
+   
+        new Vue({
+            el:'#app',
+            router:myRouter
+            })
+    </script>
+</body>
+</html>
